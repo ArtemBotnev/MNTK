@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Black">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textScaleX">0.9</item>
+    </style>
+
+    <style name="Primary">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textScaleX">0.9</item>
+    </style>
+
+    <style name="Big">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MNTK</string>
+
+    <string name="data_not_obtained">He удалось загрузить данные</string>
+</resources>
