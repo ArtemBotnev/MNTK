@@ -35,14 +35,4 @@ public class DataManager {
 
         return conferenceRoot;
     }
-
-//    public List<Participant> getParticipants(String id) throws IOException {
-//        if (participants == null) {
-//            SectionApi sectionApi = ApiProvider.getSectionApiInstance();
-//            // getting ConferenceRoot by apiConferenceSection
-//            participants = sectionApi.getParticipants(id).execute().body();
-//        }
-//
-//        return participants;
-//    }
 }
