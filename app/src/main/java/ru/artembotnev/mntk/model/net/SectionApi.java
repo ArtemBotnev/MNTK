@@ -1,6 +1,5 @@
 package ru.artembotnev.mntk.model.net;
 
-
 import java.util.List;
 
 import retrofit2.Call;

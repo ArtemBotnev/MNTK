@@ -7,11 +7,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import ru.artembotnev.mntk.model.DataManager;
 import ru.artembotnev.mntk.model.net.pojo.ConferenceRoot;
-import ru.artembotnev.mntk.model.net.pojo.Participant;
 import ru.artembotnev.mntk.model.net.pojo.Section;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +24,6 @@ import static org.junit.Assert.fail;
  * Created by Artem Botnev on 20.05.18
  */
 public class DataManagerTest {
-    private static final String CONFERENCE_ID_DEFAULT = "5adce40ae98b0504c10dded7";
 
     private static DataManager instance;
 
@@ -45,21 +42,6 @@ public class DataManagerTest {
         try {
             ConferenceRoot root = instance.getConferenceRoot();
             rootCheck(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Data haven't been obtained");
-        }
-    }
-
-    @Test
-    public void getParticipantsTest() {
-        try {
-            List<Participant> participants = instance.getParticipants(CONFERENCE_ID_DEFAULT);
-
-            assertNotNull(participants);
-            assertFalse(participants.isEmpty());
-            assertEquals("Abdallah Khaled Atya Ahmed", participants.get(0).lastName);
-
         } catch (IOException e) {
             e.printStackTrace();
             fail("Data haven't been obtained");
