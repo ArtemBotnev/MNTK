@@ -1,20 +1,21 @@
 package ru.artembotnev.mntk;
 
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Arrays;
 import java.util.List;
 
-import ru.artembotnev.mntk.model.DataManager;
-import ru.artembotnev.mntk.model.net.pojo.ConferenceRoot;
-import ru.artembotnev.mntk.model.net.pojo.Section;
+import ru.artembotnev.mntk.model.net.events.EventGetSectionFromNet;
+import ru.artembotnev.mntk.model.net.events.EventNetError;
 import ru.artembotnev.mntk.recycle_tree.ChildNodeBinder;
 import ru.artembotnev.mntk.recycle_tree.NodeHelper;
 import ru.artembotnev.mntk.recycle_tree.SectionNodeBinder;
@@ -37,11 +38,28 @@ public class MainActivity extends AppCompatActivity {
         recycler = findViewById(R.id.recycler);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        new AsyncDataLoading().execute();
+//        new AsyncDataLoading().execute();
     }
 
-    private void updateUI(List<Section> sections) {
-        List<TreeNode> nodes = NodeHelper.buildNodes(sections);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // register in eventBus
+        EventBus.getDefault().register(this);
+        // get data about conference schedule
+        MntkIntentService.obtainConferenceRoot(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // unregister in eventBus
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateUI(EventGetSectionFromNet event) {
+        List<TreeNode> nodes = NodeHelper.buildNodes(event.getSections());
         // expand item view count for saving holders state
         recycler.setItemViewCacheSize(NodeHelper.getCacheCapacity());
 
@@ -77,31 +95,8 @@ public class MainActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
     }
 
-    /**
-     * Inner class for async getting data from net
-     */
-    private class AsyncDataLoading extends AsyncTask<Void, Void, ConferenceRoot> {
-        @Override
-        protected ConferenceRoot doInBackground(Void... voids) {
-            // getting ConferenceRoot data by DataManager
-            try {
-                return DataManager.getInstance().getConferenceRoot();
-            } catch (IOException e) {
-                e.printStackTrace();
-                // try again
-                new AsyncDataLoading().execute();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ConferenceRoot conferenceRoot) {
-            if (conferenceRoot != null) {
-                updateUI(conferenceRoot.majorSections);
-            } else {
-                Toast.makeText(MainActivity.this, R.string.data_not_obtained, Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showNetworkError(EventNetError event) {
+        Toast.makeText(this, R.string.data_not_obtained, Toast.LENGTH_SHORT).show();
     }
 }
